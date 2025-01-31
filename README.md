@@ -22,5 +22,6 @@ Beyond visualizing current trends, we can integrate machine learning models to p
 - Anomaly detection: If a user selects a value that significantly deviates from historical trends, the system could highlight it and provide recommendations.  
 - Smart recommendations: The system could suggest optimal parameter values based on past successful trends, helping users make more data-driven decisions.  
 
-Conclusion
+Conclusion:
+
 While our project has already improved Tableau’s interactivity, it was only tested with a simple metric, meaning further testing and refinement are needed for more complex data scenarios. Performance optimization, multiple linked parameters, and AI-powered predictive insights are all areas where we can expand its capabilities. These enhancements will ensure that our solution remains scalable, and valuable for users working with large, dynamic datasets in live demonstration settings. 
