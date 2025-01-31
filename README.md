@@ -2,6 +2,7 @@
 Submission for Tableau Data Dev 2024 - 2025 Hackathon
 
 Potential Further Improvements:
+
 Our project satisfied our goal of improving Tableau’s current data modeling systems by creating a refined metric slider. This successfully enhances Tableau’s interactivity by allowing users to see real-time, dynamic updates to their data as they adjust a parameter slider. However, while our implementation significantly improves user experience, there are several areas for further refinement and expansion.  
 
 1. Performance Optimization for Large Datasets:
