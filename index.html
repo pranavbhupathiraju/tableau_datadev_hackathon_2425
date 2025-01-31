@@ -1,0 +1,115 @@
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Interactive Tableau Dashboard</title>
+        <script src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+        <style>
+            /* Bring back the overlay but make it invisible */
+            #loadingOverlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0);
+                /* Fully transparent */
+                z-index: 1000;
+                display: none;
+            }
+
+            /* Smooth transition effect */
+            #growthValue {
+                font-size: 20px;
+                transition: color 1s ease-in-out;
+                /* Slower transition */
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Custom Loading Overlay (Now Invisible) -->
+        <div id="loadingOverlay"></div>
+
+        <!-- Tableau Visualization -->
+        <div id="tableauViz" style="width: 100%; height: 800px;"></div>
+
+        <!-- Slider for User Input -->
+        <div style="margin: 20px; text-align: center;">
+            <label for="growthRate">Adjust Growth Rate:</label>
+            <input type="range" id="growthRate" min="-100" max="100" step="1" value="0">
+            <span id="growthValue">0%</span>
+        </div>
+
+        <script>
+            let viz;
+            let lastUpdate = 0; // Track last update time
+            const updateDelay = 300; // Slightly increased delay
+            const loadingOverlay = document.getElementById("loadingOverlay");
+
+            // Tableau Viz URL and container setup
+            const containerDiv = document.getElementById("tableauViz");
+            const url = "https://us-east-1.online.tableau.com/t/pbhupathiraj-9f430cdb45/views/HackathonDBPNav/Sheet1?:embed=y&:showVizHome=n";
+            const options = {
+                hideTabs: true,
+                width: "100%",
+                height: "800px",
+                onFirstInteractive: function () {
+                    console.log("Tableau is ready");
+                    loadingOverlay.style.display = "none"; // Hide overlay once Tableau loads
+                }
+            };
+
+            function initViz() {
+                loadingOverlay.style.display = "block"; // Show overlay while Tableau loads
+                viz = new tableau.Viz(containerDiv, url, options);
+            }
+            initViz();
+
+            // Handle slider input
+            const slider = document.getElementById("growthRate");
+            const growthValue = document.getElementById("growthValue");
+
+            slider.addEventListener("input", () => {
+                let value = parseFloat(slider.value);
+                growthValue.textContent = `${value}%`;
+                growthValue.style.color = "red"; // Temporary highlight for smooth change
+
+                // Only update Tableau if enough time has passed
+                let now = Date.now();
+                if (now - lastUpdate > updateDelay) {
+                    lastUpdate = now;
+                    updateTableauParameter(value);
+                }
+
+                // Reset color back to normal after a slower transition
+                setTimeout(() => {
+                    growthValue.style.color = "black";
+                }, 1000);
+            });
+
+            function updateTableauParameter(value) {
+                loadingOverlay.style.display = "block"; // Show overlay to buffer updates
+                const workbook = viz.getWorkbook();
+                workbook.changeParameterValueAsync("Growth Rate", value)
+                    .then(() => {
+                        console.log(`Parameter updated to: ${value}%`);
+                        setTimeout(() => {
+                            loadingOverlay.style.display = "none"; // Hide overlay after update
+                        }, 300); // Slightly longer delay
+                    })
+                    .catch(err => {
+                        console.error("Error updating parameter:", err);
+                        loadingOverlay.style.display = "none"; // Hide overlay on error
+                    });
+            }
+        </script>
+    </body>
+
+    </html>
+
+
